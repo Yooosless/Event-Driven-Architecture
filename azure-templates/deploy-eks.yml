@@ -1,0 +1,53 @@
+# Inside azure-templates/deploy-eks.yml
+steps:
+- task: AWSShellScript@1
+  displayName: 'Deploy Message Generator Worker to AWS EKS'
+  inputs:
+    awsCredentials: 'AWS-Intern'
+    regionName: '$(AWS_REGION)'
+    scriptType: 'inline'
+    inlineScript: |
+      set -e
+      CLUSTER_NAME="$(CLUSTER_NAME)"    
+      REGION="$(AWS_REGION)" 
+
+      echo "Fetching live AWS identity and account context..."
+      ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      REGISTRY_URL="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
+      
+      LIVE_ECR_IMAGE="$REGISTRY_URL/afridi-message-generator:latest"
+      
+      LIVE_GATEWAY_URL=$(aws apigatewayv2 get-apis \
+        --region $REGION \
+        --query "Items[?Name=='$(API_GATEWAY_NAME)'].ApiEndpoint" \
+        --output text)/send
+
+      echo "Scraping database access strings from AWS infrastructure registry..."
+      RDS_HOST=$(aws rds describe-db-instances \
+        --region $REGION \
+        --db-instance-identifier $(RDS_INSTANCE_ID) \
+        --query "DBInstances[0].Endpoint.Address" \
+        --output text)
+
+      LIVE_DB_URL="postgres://postgres_user:SuperSecurePassword123@${RDS_HOST}:5432/messaging_db"
+
+      echo "Injecting dynamic tokens into manifest definitions..."
+      sed -i "s|__ECR_IMAGE_URL__|$LIVE_ECR_IMAGE|g" ./eks-deployment.yml
+      sed -i "s|__API_GATEWAY_URL__|$LIVE_GATEWAY_URL|g" ./eks-deployment.yml
+      sed -i "s|__DATABASE_URL__|$LIVE_DB_URL|g" ./eks-deployment.yml
+
+      sed -i "s|__AWS_ACCESS_KEY_ID__|$AWS_ACCESS_KEY_ID|g" ./eks-deployment.yml
+      sed -i "s|__AWS_SECRET_ACCESS_KEY__|$AWS_SECRET_ACCESS_KEY|g" ./eks-deployment.yml
+      sed -i "s|__AWS_SESSION_TOKEN__|$AWS_SESSION_TOKEN|g" ./eks-deployment.yml
+
+      sed -i "s|__AWS_S3_BUCKET_NAME__|$(S3_BUCKET_NAME)|g" ./eks-deployment.yml
+      sed -i "s|__AWS_REGION__|$(AWS_REGION)|g" ./eks-deployment.yml
+
+      echo "Updating kubeconfig with cluster credentials..."
+      aws eks update-kubeconfig --region $REGION --name $CLUSTER_NAME
+
+      echo "Applying fully dynamic Kubernetes Manifest to EKS cluster..."
+      kubectl apply -f ./eks-deployment.yml
+
+      echo "Forcing deployment rollout rewrite to fetch fresh ECR layers..."
+      kubectl rollout restart deployment/afridi-eks-message-generator

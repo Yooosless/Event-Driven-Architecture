@@ -1,0 +1,120 @@
+steps:
+- task: DownloadSecureFile@1
+  name: sshKey
+  displayName: 'Fetch Server Access Key'
+  inputs:
+    secureFile: 'afridi-key.pem'
+    
+- task: AWSShellScript@1
+  displayName: 'Deploy Secure Dual-Container Stack to EC2 via Native SSH'
+  inputs:
+    awsCredentials: 'AWS-Intern'
+    regionName: 'us-east-1'
+    scriptType: 'inline'
+    inlineScript: |
+      set -e
+      chmod 400 $(sshKey.secureFilePath)
+      REGION='$(AWS_REGION)'
+
+      echo "Fetching live EC2 public IP address..."
+      EC2_IP=$(aws ec2 describe-instances \
+        --region $REGION \
+        --filters "Name=tag:Name,Values=afridi-basic-ec2" "Name=instance-state-name,Values=running" \
+        --query "Reservations[0].Instances[0].PublicIpAddress" \
+        --output text)
+
+      echo "Fetching live API Gateway Target Route URL..."
+      TARGET_GATEWAY_URL=$(aws apigatewayv2 get-apis \
+        --region $REGION \
+        --query "Items[?Name=='message-router-gateway'].ApiEndpoint" \
+        --output text)/send
+
+      echo "Fetching live RDS database endpoint..."
+      RDS_HOST=$(aws rds describe-db-instances \
+        --region $REGION \
+        --db-instance-identifier afridi-shared-message-db \
+        --query "DBInstances[0].Endpoint.Address" \
+        --output text)
+      
+      TARGET_DATABASE_URL="postgres://postgres_user:SuperSecurePassword123@${RDS_HOST}:5432/messaging_db"
+
+      echo "Targeting EC2 IP: $EC2_IP"
+      echo "Targeting Database Host: $RDS_HOST"
+      
+      echo "Syncing Nginx configuration file over to host machine..."
+      ssh -i $(sshKey.secureFilePath) -o StrictHostKeyChecking=no ec2-user@$EC2_IP "mkdir -p /home/ec2-user/nginx/certs"
+      scp -i $(sshKey.secureFilePath) -o StrictHostKeyChecking=no ./azure-templates/nginx.conf ec2-user@$EC2_IP:/home/ec2-user/nginx/nginx.conf
+
+      # Passing environment variables cleanly across the SSH threshold
+      ssh -i $(sshKey.secureFilePath) \
+          -o StrictHostKeyChecking=no \
+          ec2-user@$EC2_IP \
+          "export AWS_ACCESS_KEY_ID='$AWS_ACCESS_KEY_ID' \
+                  AWS_SECRET_ACCESS_KEY='$AWS_SECRET_ACCESS_KEY' \
+                  AWS_SESSION_TOKEN='$AWS_SESSION_TOKEN' \
+                  TARGET_DATABASE_URL='$TARGET_DATABASE_URL' \
+                  TARGET_GATEWAY_URL='$TARGET_GATEWAY_URL' \
+                  TARGET_S3_BUCKET='$(S3_BUCKET_NAME)' \
+                  AWS_REGION='$(AWS_REGION)';" \
+          'bash -s' <<'EOF'
+        set -e
+
+        echo "Generating fresh self-signed SSL certificates..."
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+          -keyout /home/ec2-user/nginx/certs/server.key \
+          -out /home/ec2-user/nginx/certs/server.crt \
+          -subj "/C=IN/ST=Telangana/L=Hyderabad/O=InternSandbox/CN=afridi-dashboard"
+
+        echo "Stopping older container execution states..."
+        docker stop nginx-proxy rust-app message-generator || true
+        docker rm nginx-proxy rust-app message-generator || true
+
+        # Re-assign variables inside the remote execution scope
+        REGION="$AWS_REGION"
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        REGISTRY_URL="$AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
+        
+        DASHBOARD_ECR="$REGISTRY_URL/rust-hello-world"  
+        GENERATOR_ECR="$REGISTRY_URL/afridi-message-generator"
+
+        echo "Logging into ECR from EC2..."
+        aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REGISTRY_URL
+        
+        echo "Pulling latest images down to worker host node."
+        docker pull $DASHBOARD_ECR:latest
+        docker pull $GENERATOR_ECR:latest
+
+        echo "Launching Box 2: Live Dashboard Application Container (Host Network)..."
+        docker run -d \
+            --name rust-app \
+            --restart always \
+            --network host \
+            -e DATABASE_URL="$TARGET_DATABASE_URL" \
+            $DASHBOARD_ECR:latest
+            
+        echo "Launching Box 1: Background Message Generator Engine Container..."
+        docker run -d \
+                  --name message-generator \
+                  --restart always \
+                  --network host \
+                  -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+                  -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
+                  -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" \
+                  -e AWS_REGION="$REGION" \
+                  -e AWS_S3_BUCKET_NAME="$TARGET_S3_BUCKET" \
+                  -e API_GATEWAY_URL="$TARGET_GATEWAY_URL" \
+                  -e DATABASE_URL="$TARGET_DATABASE_URL" \
+                  -e INFRA_SOURCE=EC2 \
+                  $GENERATOR_ECR:latest
+
+        echo "Launching Box 4: Secure Nginx Reverse Proxy Container..."
+        docker run -d \
+          --name nginx-proxy \
+          --restart always \
+          --network host \
+          -v /home/ec2-user/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+          -v /home/ec2-user/nginx/certs:/etc/nginx/certs:ro \
+          nginx:alpine
+
+        echo "Stack successfully deployed with explicit configuration file boundaries!"
+      EOF

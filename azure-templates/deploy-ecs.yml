@@ -1,0 +1,47 @@
+steps:
+  - task: AWSShellScript@1
+    displayName: 'Deploy Message Generator Worker to AWS ECS via Service Refresh'
+    inputs:
+      awsCredentials: 'AWS-Intern'
+      regionName: 'us-east-1'
+      scriptType: 'inline'
+      inlineScript: |
+        set -e
+        CLUSTER_NAME="afridi-hybrid-cluster"
+        SERVICE_NAME="afridi-rust-service"
+        REGION="us-east-1"
+
+        echo "Logging into ECR from Pipeline Context..."
+        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        REGISTRY_URL="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
+        aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REGISTRY_URL
+
+        echo "Fetching active task definition from ECS service..."
+        TASK_DEF_ARN=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$SERVICE_NAME" --region $REGION --query "services[0].taskDefinition" --output text)
+        
+        # Download the active task definition JSON structure
+        aws ecs describe-task-definition --task-definition "$TASK_DEF_ARN" --region $REGION --query "taskDefinition" > raw-task-def.json
+
+        echo "Injecting S3 Bucket and Region variables into the container environment..."
+        # Clean up metadata keys AWS won't accept on registration, then inject your pipeline variables into the env array
+        cat raw-task-def.json | jq \
+          --arg bucket "$(S3_BUCKET_NAME)" \
+          --arg region "$(AWS_REGION)" \
+          'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy) | 
+           .containerDefinitions[0].environment += [
+             {"name": "AWS_S3_BUCKET_NAME", "value": $bucket},
+             {"name": "AWS_REGION", "value": $region}
+           ]' > updated-task-def.json
+
+        echo "Registering updated Task Definition revision..."
+        NEW_TASK_ARN=$(aws ecs register-task-definition --cli-input-json file://updated-task-def.json --region $REGION --query "taskDefinition.taskDefinitionArn" --output text)
+
+        echo "Deploying updated task revision to ECS service: $NEW_TASK_ARN"
+        aws ecs update-service \
+          --cluster "$CLUSTER_NAME" \
+          --service "$SERVICE_NAME" \
+          --task-definition "$NEW_TASK_ARN" \
+          --force-new-deployment \
+          --region $REGION
+
+        echo "ECS service update successfully signaled to Fargate fabric with variables injected!"

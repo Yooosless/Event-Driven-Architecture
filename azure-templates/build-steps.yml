@@ -1,0 +1,38 @@
+steps:
+- task: AWSShellScript@1
+  displayName: 'Detect Changes and Build/Push to ECR'
+  inputs:
+    awsCredentials: 'AWS-Intern'
+    regionName: 'us-east-1'
+    scriptType: 'inline'
+    inlineScript: |
+      set -e  
+      
+      # --- 1. DETECT IF CORE APPLICATION DIRECTORIES CHANGED..
+      # echo "Checking git commit diff for application source changes..."
+      # CHANGED_CODE=$(git diff --name-only HEAD~1 HEAD | grep -E '^(hello-world/|message-generator/)' || true)
+
+      # if [ -z "$CHANGED_CODE" ]; then
+      #   echo "========================================================================="
+      #   echo " NOTICE: No application code changes found in hello-world/ or message-generator/."
+      #   echo " Skipping Docker builds entirely. Proceeding directly to deployment stages."
+      #   echo "========================================================================="
+      #   exit 0
+      # fi
+
+      # --- 2. RUN FULL BUILD & PUSH ROUTINE ONLY IF MATCHED ---
+      echo "Application source changes detected! Initiating Docker build sequence..."
+      ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      REGISTRY_URL="$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com"
+      
+      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REGISTRY_URL
+
+      echo "Building and Pushing Dashboard Backend..."
+      docker build -f hello-world.Dockerfile -t rust-app:latest .
+      docker tag rust-app:latest $REGISTRY_URL/rust-hello-world:latest
+      docker push $REGISTRY_URL/rust-hello-world:latest
+
+      echo "Building and Pushing Message Generator..."
+      docker build -f message-generator.Dockerfile -t message-generator:latest .
+      docker tag message-generator:latest $REGISTRY_URL/afridi-message-generator:latest
+      docker push $REGISTRY_URL/afridi-message-generator:latest

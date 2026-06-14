@@ -1,0 +1,6 @@
+variables:
+  S3_BUCKET_NAME: 'afridi-poc-bucket'
+  AWS_REGION: 'us-east-1'
+  CLUSTER_NAME: 'afridi-eks-worker-cluster'
+  RDS_INSTANCE_ID: 'afridi-shared-message-db'
+  API_GATEWAY_NAME: 'message-router-gateway'

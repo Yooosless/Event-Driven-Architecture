@@ -1,0 +1,60 @@
+---
+- name: Deploy Rust Application Container to EC2
+  hosts: all
+  gather_facts: false
+  become: true  
+  remote_user: ec2-user
+      
+  tasks:
+    - name: Verify system toolchains are updated
+      yum:
+        name: docker
+        state: latest
+
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Authenticate Docker engine to AWS ECR
+      shell: |
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }}
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        AWS_SESSION_TOKEN: "{{ lookup('env', 'AWS_SESSION_TOKEN') }}"
+
+    - name: Pull latest Rust application image from ECR
+      docker_image:
+        name: "{{ ecr_url }}"
+        tag: "{{ item }}"
+        source: pull
+        force_source: yes
+      loop:
+        - latest
+        - generator
+
+    - name: Stop and clean up existing container instances
+      docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - rust-app
+        - message-generator
+
+    - name: Launch fresh dashboard application container instance
+      docker_container:
+        name: rust-app
+        image: "{{ ecr_url }}:latest"
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:8080"
+
+    - name: Launch fresh generator background container instance
+      docker_container:
+        name: message-generator
+        image: "{{ ecr_url }}:generator"
+        state: started
+        restart_policy: always

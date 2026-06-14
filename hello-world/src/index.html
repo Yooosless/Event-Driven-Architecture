@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>testing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e24;
+            color: #f7f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px; 
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1600px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+        .box {
+            flex: 1 1 320px;
+            background-color: #2a2a35;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #3a3a4a;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        h2 { margin-top: 0; color: #40a9ff; border-bottom: 2px solid #3a3a4a; padding-bottom: 8px; font-size: 1.3rem; }
+        textarea {
+            width: 100%;
+            height: 120px;
+            background-color: #1e1e24;
+            color: #fff;
+            border: 1px solid #4a4a5a;
+            border-radius: 4px;
+            padding: 10px;
+            resize: none;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            margin-top: 12px;
+            background-color: #0050b3;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: #096dd9; }
+        
+        /* Styled Counters */
+        .metric-counter-display {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 40px 10px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #ffffff;
+        }
+
+        .test-metrics {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #1e1e24;
+            border-radius: 4px;
+            border: 1px solid #ff4d4f;
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            body { padding: 20px 10px; }
+            h1 { font-size: 1.8rem; text-align: center; }
+            .container { flex-direction: column; align-items: stretch; gap: 25px; }
+            .box { flex: 1 1 100%; width: 100%; }
+            .container > .box[style*="flex: 0 0 300px;"] { flex: 1 1 100% !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Infrastructure Compute Dashboard</h1>
+    
+    <div class="container" id="dynamic-grid-system">
+        <div class="box" style="flex: 0 0 300px;">
+            <h2>Send Message Route</h2>
+            <textarea id="msg-text" placeholder="Type a message to deploy down the EKS pipeline..."></textarea>
+            
+            <select id="target-route" style="width: 100%; padding: 10px; background: #1e1e24; color: #fff; border: 1px solid #4a4a5a; border-radius: 4px; margin-top: 10px;">
+                <option value="EKS">EKS-POD</option>
+                <option value="EC2">EC2</option>
+                <option value="ECS">ECS</option>
+            </select>
+
+            <button onclick="sendMessage()">Send Message</button>
+
+            <div style="margin-top: 25px; border-top: 2px dashed #4a4a5a; padding-top: 20px;">
+                <h2 style="color: #ff4d4f; border-bottom: none; padding-bottom: 0; font-size: 1.1rem; margin-bottom: 12px;">Ingestion Load Tester</h2>
+                
+                <label style="font-size: 0.85rem; color: #a4b0be; display: block; margin-bottom: 5px;">Record Volume Batch Size:</label>
+                <input type="number" id="bulk-count" value="10000" style="width: 100%; padding: 10px; background: #1e1e24; color: #fff; border: 1px solid #4a4a5a; border-radius: 4px; box-sizing: border-box; font-weight: bold;">
+                
+                <button onclick="triggerBulkTest()" id="bulk-btn" style="background-color: #a8071a; margin-top: 12px;">
+                    Test
+                </button>
+
+                <div id="test-metrics-panel" class="test-metrics">
+                    <span id="metrics-status-badge" style="color: #f9e2af; font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 4px;">Processing Pipeline Streams...</span>
+                    <span style="font-size: 0.85rem; color: #ced6e0;">Successfully Queued: <strong id="metrics-count" style="color: #fff;">0</strong> items</span>
+                    <p style="margin: 6px 0 0 0; color: #ced6e0; font-size: 0.85rem;">Total Backend Pipeline Time: <strong id="time-elapsed" style="color: #ffc069; font-size: 1rem;">0 ms</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="box">
+            <h2 style="color: #40a9ff; border-color: #40a9ff;">EC2 Metrics Tracker</h2>
+            <div id="counter-EC2" class="metric-counter-display" style="border-left: 5px solid #40a9ff;">0</div>
+        </div>
+
+        <div class="box">
+            <h2 style="color: #722ed1; border-color: #722ed1;">ECS Metrics Tracker</h2>
+            <div id="counter-ECS" class="metric-counter-display" style="border-left: 5px solid #722ed1;">0</div>
+        </div>
+
+        <div class="box">
+            <h2 style="color: #52c41a; border-color: #52c41a;">EKS Metrics Tracker</h2>
+            <div id="counter-EKS" class="metric-counter-display" style="border-left: 5px solid #52c41a;">0</div>
+        </div>
+    </div>
+
+    <script>
+        // 💡 Keep a running tally in browser RAM across polling sweeps
+        const lifetimeMetrics = {
+            EC2: 0,
+            ECS: 0,
+            EKS: 0
+        };
+
+        async function sendMessage() {
+            const input = document.getElementById('msg-text');
+            const targetSelect = document.getElementById('target-route');
+            const text = input.value;
+            const targetSource = targetSelect.value;
+            
+            if(!text.trim()) return;
+
+            try {
+                await fetch('/send', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-Source': targetSource 
+                    },
+                    body: JSON.stringify({ 
+                        id: String(Math.floor(Math.random() * 10000)),
+                        message: text 
+                    })
+                });
+                input.value = '';
+                await fetchMessages(); 
+            } catch (err) {
+                console.error("Direct send failure:", err);
+            }
+        }
+
+        async function triggerBulkTest() {
+            const countInput = document.getElementById("bulk-count");
+            const bulkBtn = document.getElementById("bulk-btn");
+            const metricsPanel = document.getElementById("test-metrics-panel");
+            const statusBadge = document.getElementById("metrics-status-badge");
+            const countText = document.getElementById("metrics-count");
+            const timeText = document.getElementById("time-elapsed");
+
+            const batchSize = parseInt(countInput.value) || 10000;
+            
+            bulkBtn.disabled = true;
+            bulkBtn.style.backgroundColor = "#590915";
+            bulkBtn.innerText = "Processing Bulk Ingestion Stream...";
+            
+            statusBadge.innerText = "Processing Pipeline Streams...";
+            statusBadge.style.color = "#f9e2af";
+            timeText.innerText = "Computing...";
+            countText.innerText = batchSize.toLocaleString();
+            metricsPanel.style.display = "block";
+
+            try {
+                const response = await fetch('/bulk-send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Source': 'ECS'
+                    },
+                    body: JSON.stringify({ record_count: batchSize })
+                });
+
+                if (!response.ok) throw new Error("Server engine rejection");
+                await fetchMessages();
+
+            } catch (err) {
+                alert("Pipeline transaction issue.");
+                console.error(err);
+                metricsPanel.style.display = "none";
+            } finally {
+                bulkBtn.disabled = false;
+                bulkBtn.style.backgroundColor = "#a8071a";
+                bulkBtn.innerText = "Test";
+            }
+        }
+
+        async function fetchMessages() {
+            try {
+                const response = await fetch('/receive');
+                if (!response.ok) return;
+                const data = await response.json();
+                
+                const statusBadge = document.getElementById("metrics-status-badge");
+                const timeText = document.getElementById("time-elapsed");
+                const metricsPanel = document.getElementById("test-metrics-panel");
+
+                // Update latency timer dashboard display
+                if (data.pipeline_time_ms && data.pipeline_time_ms > 0) {
+                    statusBadge.innerText = "Execution Complete";
+                    statusBadge.style.color = "#52c41a"; 
+                    timeText.innerText = `${data.pipeline_time_ms.toLocaleString()} ms`;
+                } else if (metricsPanel.style.display === "block" && data.pipeline_time_ms === 0) {
+                    statusBadge.innerText = "Processing Pipeline Streams...";
+                    statusBadge.style.color = "#f9e2af"; 
+                    timeText.innerText = "Computing...";
+                }
+
+                // 💡 Incrementally add up processed totals in the browser view
+                if (data.counts) {
+                    ['EC2', 'ECS', 'EKS'].forEach(infra => {
+                        if (data.counts[infra]) {
+                            lifetimeMetrics[infra] += data.counts[infra];
+                        }
+                        
+                        // Paint the total sum directly onto the dashboard
+                        document.getElementById(`counter-${infra}`).innerText = 
+                            lifetimeMetrics[infra].toLocaleString();
+                    });
+                }
+
+            } catch (err) {
+                console.error("Metrics collection failure:", err);
+            }
+        }
+
+        async function runCooperativePollingSystem() {
+            await fetchMessages();
+            setTimeout(runCooperativePollingSystem, 1000);
+        }
+
+        runCooperativePollingSystem();
+    </script>
+</body>
+</html>

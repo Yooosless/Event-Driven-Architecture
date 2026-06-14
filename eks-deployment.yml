@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: afridi-eks-message-generator
+  namespace: default
+  labels:
+    app: eks-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eks-worker
+  template:
+    metadata:
+      labels:
+        app: eks-worker
+    spec:
+      containers:
+      - name: message-generator
+        image: __ECR_IMAGE_URL__
+        imagePullPolicy: Always
+        env:
+        - name: INFRA_SOURCE
+          value: "EKS"
+        - name: API_GATEWAY_URL
+          value: "__API_GATEWAY_URL__"
+        - name: DATABASE_URL
+          value: "__DATABASE_URL__"
+        - name: AWS_S3_BUCKET_NAME
+          value: "__AWS_S3_BUCKET_NAME__" 
+        - name: AWS_REGION
+          value: "__AWS_REGION__"         
+        - name: AWS_ACCESS_KEY_ID
+          value: "__AWS_ACCESS_KEY_ID__"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "__AWS_SECRET_ACCESS_KEY__"
+        - name: AWS_SESSION_TOKEN
+          value: "__AWS_SESSION_TOKEN__"
+        resources:
+          limits:
+            cpu: "250m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"

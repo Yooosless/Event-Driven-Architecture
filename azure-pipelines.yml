@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: 'Build Core Application'
+  jobs:
+  - job: RunDockerBuild
+    displayName: 'Compile Rust and Push to ECR'
+    variables:
+      - template: azure-templates/variables.yml
+    steps:
+    - checkout: self
+    - template: azure-templates/build-steps.yml
+
+  - job: DeployAllStacks
+    displayName: 'CICD'
+    dependsOn: RunDockerBuild
+    variables:
+      - template: azure-templates/variables.yml
+    steps:
+    - checkout: self 
+
+    # 1. Deploy target layer to EC2 via native SSH configuration
+    - template: azure-templates/deploy-steps.yml
+
+    # 2. Deploy target layer to EKS 
+    - template: azure-templates/deploy-eks.yml
+
+    # 3. Deploy target layer to ECS Fargate task architectures
+    - template: azure-templates/deploy-ecs.yml

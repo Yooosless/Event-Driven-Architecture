@@ -1,0 +1,1459 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.5",
+  "serial": 226,
+  "lineage": "db0ed7dc-d490-750b-6027-02496857f62d",
+  "outputs": {
+    "api_gateway_url": {
+      "value": "https://fzurpsaf1b.execute-api.us-east-1.amazonaws.com",
+      "type": "string"
+    },
+    "ec2_public_ip": {
+      "value": "100.55.69.232",
+      "type": "string"
+    },
+    "ecr_repo_url": {
+      "value": "589118303122.dkr.ecr.us-east-1.amazonaws.com/rust-hello-world",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "archive_file",
+      "name": "lambda_zip",
+      "provider": "provider[\"registry.terraform.io/hashicorp/archive\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "exclude_symlink_directories": null,
+            "excludes": null,
+            "id": "561bd6ab4282327fd5ae4ed6aae6ec0ed024705f",
+            "output_base64sha256": "TTHqkbpIEesu5vjvBM1udP0bgysSCV4dxXli4Okn4RY=",
+            "output_base64sha512": "FMEX8sJVEF1FRUUh2FP+RK/I+9jx9fVhjdTd/IOpEnRDcr1OYE1RwvL7g2YAXcPYyKFmnKI2aQrSa+72Ws8WXw==",
+            "output_file_mode": null,
+            "output_md5": "0cf01d1b11d8156fbf7bf2af3dfd47bd",
+            "output_path": "./lambda_function.zip",
+            "output_sha": "561bd6ab4282327fd5ae4ed6aae6ec0ed024705f",
+            "output_sha256": "4d31ea91ba4811eb2ee6f8ef04cd6e74fd1b832b12095e1dc57962e0e927e116",
+            "output_sha512": "14c117f2c255105d45454521d853fe44afc8fbd8f1f5f5618dd4ddfc83a912744372bd4e604d51c2f2fb8366005dc3d8c8a1669ca236690ad26beef65acf165f",
+            "output_size": 927,
+            "source": [],
+            "source_content": null,
+            "source_content_filename": null,
+            "source_dir": "./lambda-helper",
+            "source_file": null,
+            "type": "zip"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_subnets",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "filter": [
+              {
+                "name": "map-public-ip-on-launch",
+                "values": [
+                  "true"
+                ]
+              },
+              {
+                "name": "vpc-id",
+                "values": [
+                  "vpc-0f581c357638067ff"
+                ]
+              }
+            ],
+            "id": "us-east-1",
+            "ids": [
+              "subnet-053f7c2400712c856",
+              "subnet-0e882c7ef132dbb91",
+              "subnet-0d5be6e1a2e13c551"
+            ],
+            "tags": null,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_vpc",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:589118303122:vpc/vpc-0f581c357638067ff",
+            "cidr_block": "172.31.0.0/16",
+            "cidr_block_associations": [
+              {
+                "association_id": "vpc-cidr-assoc-024bcc27103318901",
+                "cidr_block": "172.31.0.0/16",
+                "state": "associated"
+              }
+            ],
+            "default": true,
+            "dhcp_options_id": "dopt-0ea7994036e1d82ce",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "filter": null,
+            "id": "vpc-0f581c357638067ff",
+            "instance_tenancy": "default",
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "main_route_table_id": "rtb-0a31f432a57c5477a",
+            "owner_id": "589118303122",
+            "state": null,
+            "tags": {
+              "Environment": "dev",
+              "Name": "interns-dev-vpc",
+              "map-migrated": "migOWSZG7F4UM"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_apigatewayv2_api",
+      "name": "http_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_endpoint": "https://fzurpsaf1b.execute-api.us-east-1.amazonaws.com",
+            "api_key_selection_expression": "$request.header.x-api-key",
+            "arn": "arn:aws:apigateway:us-east-1::/apis/fzurpsaf1b",
+            "body": null,
+            "cors_configuration": [],
+            "credentials_arn": null,
+            "description": "",
+            "disable_execute_api_endpoint": false,
+            "execution_arn": "arn:aws:execute-api:us-east-1:589118303122:fzurpsaf1b",
+            "fail_on_warnings": null,
+            "id": "fzurpsaf1b",
+            "ip_address_type": "ipv4",
+            "name": "message-router-gateway",
+            "protocol_type": "HTTP",
+            "route_key": null,
+            "route_selection_expression": "$request.method $request.path",
+            "tags": {},
+            "tags_all": {},
+            "target": null,
+            "version": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_apigatewayv2_integration",
+      "name": "lambda_int",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_id": "fzurpsaf1b",
+            "connection_id": "",
+            "connection_type": "INTERNET",
+            "content_handling_strategy": "",
+            "credentials_arn": "",
+            "description": "",
+            "id": "p4hptaj",
+            "integration_method": "POST",
+            "integration_response_selection_expression": "",
+            "integration_subtype": "",
+            "integration_type": "AWS_PROXY",
+            "integration_uri": "arn:aws:lambda:us-east-1:589118303122:function:message-middleware-router",
+            "passthrough_behavior": "",
+            "payload_format_version": "1.0",
+            "request_parameters": {},
+            "request_templates": {},
+            "response_parameters": [],
+            "template_selection_expression": "",
+            "timeout_milliseconds": 30000,
+            "tls_config": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_apigatewayv2_api.http_api",
+            "aws_db_instance.postgres",
+            "aws_ecr_repository.message_generator",
+            "aws_ecs_cluster.app_cluster",
+            "aws_ecs_service.rust_ecs_service",
+            "aws_ecs_task_definition.rust_ecs_task",
+            "aws_instance.afridi_basic",
+            "aws_key_pair.ec2_key",
+            "aws_lambda_function.router",
+            "aws_security_group.allow_ssh",
+            "aws_security_group.rds_sg",
+            "data.archive_file.lambda_zip",
+            "data.aws_subnets.public",
+            "data.aws_vpc.default",
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_apigatewayv2_route",
+      "name": "catch_all",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_id": "fzurpsaf1b",
+            "api_key_required": false,
+            "authorization_scopes": [],
+            "authorization_type": "NONE",
+            "authorizer_id": "",
+            "id": "esjpun6",
+            "model_selection_expression": "",
+            "operation_name": "",
+            "request_models": {},
+            "request_parameter": [],
+            "route_key": "ANY /{proxy+}",
+            "route_response_selection_expression": "",
+            "target": "integrations/p4hptaj"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_apigatewayv2_api.http_api",
+            "aws_apigatewayv2_integration.lambda_int",
+            "aws_db_instance.postgres",
+            "aws_ecr_repository.message_generator",
+            "aws_ecs_cluster.app_cluster",
+            "aws_ecs_service.rust_ecs_service",
+            "aws_ecs_task_definition.rust_ecs_task",
+            "aws_instance.afridi_basic",
+            "aws_key_pair.ec2_key",
+            "aws_lambda_function.router",
+            "aws_security_group.allow_ssh",
+            "aws_security_group.rds_sg",
+            "data.archive_file.lambda_zip",
+            "data.aws_subnets.public",
+            "data.aws_vpc.default",
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_apigatewayv2_stage",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_log_settings": [],
+            "api_id": "fzurpsaf1b",
+            "arn": "arn:aws:apigateway:us-east-1::/apis/fzurpsaf1b/stages/$default",
+            "auto_deploy": true,
+            "client_certificate_id": "",
+            "default_route_settings": [
+              {
+                "data_trace_enabled": false,
+                "detailed_metrics_enabled": false,
+                "logging_level": "",
+                "throttling_burst_limit": 0,
+                "throttling_rate_limit": 0
+              }
+            ],
+            "deployment_id": "4ntsgs",
+            "description": "",
+            "execution_arn": "arn:aws:execute-api:us-east-1:589118303122:fzurpsaf1b/$default",
+            "id": "$default",
+            "invoke_url": "https://fzurpsaf1b.execute-api.us-east-1.amazonaws.com/",
+            "name": "$default",
+            "route_settings": [],
+            "stage_variables": {},
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_apigatewayv2_api.http_api"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "postgres",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "status": "tainted",
+          "schema_version": 2,
+          "attributes": {
+            "address": null,
+            "allocated_storage": 20,
+            "allow_major_version_upgrade": null,
+            "apply_immediately": false,
+            "arn": null,
+            "auto_minor_version_upgrade": true,
+            "availability_zone": null,
+            "backup_retention_period": null,
+            "backup_target": null,
+            "backup_window": null,
+            "blue_green_update": [],
+            "ca_cert_identifier": null,
+            "character_set_name": null,
+            "copy_tags_to_snapshot": false,
+            "custom_iam_instance_profile": null,
+            "customer_owned_ip_enabled": null,
+            "database_insights_mode": null,
+            "db_name": "messaging_db",
+            "db_subnet_group_name": null,
+            "dedicated_log_volume": false,
+            "delete_automated_backups": true,
+            "deletion_protection": null,
+            "domain": null,
+            "domain_auth_secret_arn": null,
+            "domain_dns_ips": null,
+            "domain_fqdn": null,
+            "domain_iam_role_name": null,
+            "domain_ou": null,
+            "enabled_cloudwatch_logs_exports": null,
+            "endpoint": null,
+            "engine": "postgres",
+            "engine_lifecycle_support": null,
+            "engine_version": "15",
+            "engine_version_actual": null,
+            "final_snapshot_identifier": null,
+            "hosted_zone_id": null,
+            "iam_database_authentication_enabled": null,
+            "id": "db-KCPXBLGNE6HZFHBBONHPQ47SQY",
+            "identifier": "afridi-shared-message-db",
+            "identifier_prefix": null,
+            "instance_class": "db.t3.micro",
+            "iops": null,
+            "kms_key_id": null,
+            "latest_restorable_time": null,
+            "license_model": null,
+            "listener_endpoint": null,
+            "maintenance_window": null,
+            "manage_master_user_password": null,
+            "master_user_secret": null,
+            "master_user_secret_kms_key_id": null,
+            "max_allocated_storage": null,
+            "monitoring_interval": 0,
+            "monitoring_role_arn": null,
+            "multi_az": null,
+            "nchar_character_set_name": null,
+            "network_type": null,
+            "option_group_name": null,
+            "parameter_group_name": null,
+            "password": "SuperSecurePassword123",
+            "password_wo": null,
+            "password_wo_version": null,
+            "performance_insights_enabled": false,
+            "performance_insights_kms_key_id": null,
+            "performance_insights_retention_period": null,
+            "port": null,
+            "publicly_accessible": true,
+            "replica_mode": null,
+            "replicas": null,
+            "replicate_source_db": null,
+            "resource_id": null,
+            "restore_to_point_in_time": [],
+            "s3_import": [],
+            "skip_final_snapshot": true,
+            "snapshot_identifier": null,
+            "status": null,
+            "storage_encrypted": null,
+            "storage_throughput": null,
+            "storage_type": null,
+            "tags": null,
+            "tags_all": null,
+            "timeouts": null,
+            "timezone": null,
+            "upgrade_storage_config": null,
+            "username": "postgres_user",
+            "vpc_security_group_ids": [
+              "sg-0127c57eb9eeb504d"
+            ]
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "password_wo"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NDgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "aws_security_group.rds_sg",
+            "data.aws_vpc.default"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_ecr_repository",
+      "name": "message_generator",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ecr:us-east-1:589118303122:repository/afridi-message-generator",
+            "encryption_configuration": [
+              {
+                "encryption_type": "AES256",
+                "kms_key": ""
+              }
+            ],
+            "force_delete": true,
+            "id": "afridi-message-generator",
+            "image_scanning_configuration": [
+              {
+                "scan_on_push": false
+              }
+            ],
+            "image_tag_mutability": "MUTABLE",
+            "name": "afridi-message-generator",
+            "registry_id": "589118303122",
+            "repository_url": "589118303122.dkr.ecr.us-east-1.amazonaws.com/afridi-message-generator",
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjoxMjAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_ecr_repository",
+      "name": "rust_app",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ecr:us-east-1:589118303122:repository/rust-hello-world",
+            "encryption_configuration": [
+              {
+                "encryption_type": "AES256",
+                "kms_key": ""
+              }
+            ],
+            "force_delete": true,
+            "id": "rust-hello-world",
+            "image_scanning_configuration": [
+              {
+                "scan_on_push": false
+              }
+            ],
+            "image_tag_mutability": "MUTABLE",
+            "name": "rust-hello-world",
+            "registry_id": "589118303122",
+            "repository_url": "589118303122.dkr.ecr.us-east-1.amazonaws.com/rust-hello-world",
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjoxMjAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_ecs_cluster",
+      "name": "app_cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ecs:us-east-1:589118303122:cluster/afridi-hybrid-cluster",
+            "configuration": [],
+            "id": "arn:aws:ecs:us-east-1:589118303122:cluster/afridi-hybrid-cluster",
+            "name": "afridi-hybrid-cluster",
+            "service_connect_defaults": [],
+            "setting": [
+              {
+                "name": "containerInsights",
+                "value": "disabled"
+              }
+            ],
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_ecs_service",
+      "name": "rust_ecs_service",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "alarms": [],
+            "availability_zone_rebalancing": "DISABLED",
+            "capacity_provider_strategy": [],
+            "cluster": "arn:aws:ecs:us-east-1:589118303122:cluster/afridi-hybrid-cluster",
+            "deployment_circuit_breaker": [
+              {
+                "enable": false,
+                "rollback": false
+              }
+            ],
+            "deployment_controller": [
+              {
+                "type": "ECS"
+              }
+            ],
+            "deployment_maximum_percent": 200,
+            "deployment_minimum_healthy_percent": 100,
+            "desired_count": 1,
+            "enable_ecs_managed_tags": false,
+            "enable_execute_command": false,
+            "force_delete": null,
+            "force_new_deployment": null,
+            "health_check_grace_period_seconds": 0,
+            "iam_role": "/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
+            "id": "arn:aws:ecs:us-east-1:589118303122:service/afridi-hybrid-cluster/afridi-rust-service",
+            "launch_type": "FARGATE",
+            "load_balancer": [],
+            "name": "afridi-rust-service",
+            "network_configuration": [
+              {
+                "assign_public_ip": true,
+                "security_groups": [
+                  "sg-04b9bc1f1e76d3cc4"
+                ],
+                "subnets": [
+                  "subnet-053f7c2400712c856",
+                  "subnet-0d5be6e1a2e13c551",
+                  "subnet-0e882c7ef132dbb91"
+                ]
+              }
+            ],
+            "ordered_placement_strategy": [],
+            "placement_constraints": [],
+            "platform_version": "LATEST",
+            "propagate_tags": "NONE",
+            "scheduling_strategy": "REPLICA",
+            "service_connect_configuration": [],
+            "service_registries": [],
+            "tags": {},
+            "tags_all": {},
+            "task_definition": "arn:aws:ecs:us-east-1:589118303122:task-definition/rust-app-task:3",
+            "timeouts": null,
+            "triggers": {},
+            "volume_configuration": [],
+            "vpc_lattice_configurations": [],
+            "wait_for_steady_state": false
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_apigatewayv2_api.http_api",
+            "aws_db_instance.postgres",
+            "aws_ecr_repository.message_generator",
+            "aws_ecs_cluster.app_cluster",
+            "aws_ecs_task_definition.rust_ecs_task",
+            "aws_security_group.allow_ssh",
+            "aws_security_group.rds_sg",
+            "data.aws_subnets.public",
+            "data.aws_vpc.default"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_cluster",
+      "name": "eks_worker_cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "access_config": [
+              {
+                "authentication_mode": "CONFIG_MAP",
+                "bootstrap_cluster_creator_admin_permissions": true
+              }
+            ],
+            "arn": "arn:aws:eks:us-east-1:589118303122:cluster/afridi-eks-worker-cluster",
+            "bootstrap_self_managed_addons": true,
+            "certificate_authority": [
+              {
+                "data": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJVXBkK3lzVlBocFV3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBMU16RXhNelF5TVRKYUZ3MHpOakExTWpneE16UTNNVEphTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURVbWp5SnNBa0x6aWt3U2hTbFhjYUpuNGx3eGZuZXZucDdWSFlUNWthdE1BKzdjY2NIWWg5cWdnaGsKUnRmTGNiTHRGbTVEOGo4Rk0yRTNEdzd4NEsvZHFDbFo5ZDVIektMaC9OcHp1bmE2d1F2RmpFS0k4QjNtYm9HWQpWeFYzVklvcVhpNmdjdk02T3BvZ3BTOXVPRHZ5U3ZWUHdoRC9lNURsSnFjdkJzRHk4Q09tRGJHMjk1dDBPMXRnCjNzZ2xWTmo3M1lURm9YR3RrczlYaFdlN20rZVNhVnQxbTkvTDBjdEVteXZBSS9CdlBYRnU1RTFaS2p3aE8yTG8KbTE0eW1PMHViUFFHRG5TRmRUREQyZXBEVVZmRUZuOExvTVZCNGZsQUh0VUd4YTZ2cDVqUGhoOUs5dlVBUHQ1VAphRDk0M0Vhb2FyTDhiSW5FS1UwUkMyQjNUaHlEQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSL0djQkl6NjlhakdPMXRWTmxMdlNSZHVFNnZUQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQW9Yd3VVWUJDRApMZFhuTEgvZklUYVVrQlRlTzhSUFJqTmgxckZsWEhVOHFaNVBxdGRoN2p4TTFUb0o0VWwvQW5rYkIzNEN0Rkw4CjhCVTM2bCt5M1UwQjVIVStTQko5UzNseEJuamU5eU9OMVhGYzhaVWdkdllzYldUYnJmc215eXpvVDZ4a0I2Z0gKcjNzNndFMFh3NXJGM3N5VmM2RTR6U0JNYlZZa0U5SmdxeWZHSU03Q2QwWVV2QkU1L0pnb3hYL1pSRmJhSlZtMgpLQTJFcG5KOUI0T0hhZXdKV0kveTNmQjJyQ05HdzlZN0pwOTVQL1pVUXhhSlJKTGNiNkJpWFNBekhuQy9FU1IwCmwzeU9DMnpPK3YrMzRHME41Yk8zWkVhVWpGTzRjdlQ4UHkvUElMVUxEalZ6NEJ6Vzg3cnJyUFRjWlZJVUtIbE4KT0prNm5nMURlWG5QCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+              }
+            ],
+            "cluster_id": null,
+            "compute_config": [],
+            "created_at": "2026-05-31T13:41:06Z",
+            "enabled_cluster_log_types": [],
+            "encryption_config": [],
+            "endpoint": "https://1F3B31EF7791CB8995C58F6D3D1F33EA.gr7.us-east-1.eks.amazonaws.com",
+            "force_update_version": null,
+            "id": "afridi-eks-worker-cluster",
+            "identity": [
+              {
+                "oidc": [
+                  {
+                    "issuer": "https://oidc.eks.us-east-1.amazonaws.com/id/1F3B31EF7791CB8995C58F6D3D1F33EA"
+                  }
+                ]
+              }
+            ],
+            "kubernetes_network_config": [
+              {
+                "elastic_load_balancing": [
+                  {
+                    "enabled": false
+                  }
+                ],
+                "ip_family": "ipv4",
+                "service_ipv4_cidr": "10.100.0.0/16",
+                "service_ipv6_cidr": ""
+              }
+            ],
+            "name": "afridi-eks-worker-cluster",
+            "outpost_config": [],
+            "platform_version": "eks.13",
+            "remote_network_config": [],
+            "role_arn": "arn:aws:iam::589118303122:role/interns-test-universe-eks-cluster-role",
+            "status": "ACTIVE",
+            "storage_config": [],
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "upgrade_policy": [
+              {
+                "support_type": "EXTENDED"
+              }
+            ],
+            "version": "1.35",
+            "vpc_config": [
+              {
+                "cluster_security_group_id": "sg-0d0d4ff1cad5147e1",
+                "endpoint_private_access": false,
+                "endpoint_public_access": true,
+                "public_access_cidrs": [
+                  "0.0.0.0/0"
+                ],
+                "security_group_ids": [],
+                "subnet_ids": [
+                  "subnet-053f7c2400712c856",
+                  "subnet-0d5be6e1a2e13c551",
+                  "subnet-0e882c7ef132dbb91"
+                ],
+                "vpc_id": "vpc-0f581c357638067ff"
+              }
+            ],
+            "zonal_shift_config": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjkwMDAwMDAwMDAwMCwidXBkYXRlIjozNjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "data.aws_subnets.public",
+            "data.aws_vpc.default"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_node_group",
+      "name": "eks_worker_nodes",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "ami_type": "AL2023_x86_64_STANDARD",
+            "arn": "arn:aws:eks:us-east-1:589118303122:nodegroup/afridi-eks-worker-cluster/worker-node-pool/72cf406b-1cb2-07f1-321d-e0089196fd0f",
+            "capacity_type": "ON_DEMAND",
+            "cluster_name": "afridi-eks-worker-cluster",
+            "disk_size": 20,
+            "force_update_version": null,
+            "id": "afridi-eks-worker-cluster:worker-node-pool",
+            "instance_types": [
+              "t3.medium"
+            ],
+            "labels": {},
+            "launch_template": [],
+            "node_group_name": "worker-node-pool",
+            "node_group_name_prefix": "",
+            "node_repair_config": [],
+            "node_role_arn": "arn:aws:iam::589118303122:role/afridi-eks-worker-role",
+            "release_version": "1.35.5-20260527",
+            "remote_access": [
+              {
+                "ec2_ssh_key": "afridi-basic-key",
+                "source_security_group_ids": []
+              }
+            ],
+            "resources": [
+              {
+                "autoscaling_groups": [
+                  {
+                    "name": "eks-worker-node-pool-72cf406b-1cb2-07f1-321d-e0089196fd0f"
+                  }
+                ],
+                "remote_access_security_group_id": "sg-03195ba24df712b90"
+              }
+            ],
+            "scaling_config": [
+              {
+                "desired_size": 1,
+                "max_size": 2,
+                "min_size": 1
+              }
+            ],
+            "status": "ACTIVE",
+            "subnet_ids": [
+              "subnet-053f7c2400712c856",
+              "subnet-0d5be6e1a2e13c551",
+              "subnet-0e882c7ef132dbb91"
+            ],
+            "tags": {},
+            "tags_all": {},
+            "taint": [],
+            "timeouts": null,
+            "update_config": [
+              {
+                "max_unavailable": 1,
+                "max_unavailable_percentage": 0
+              }
+            ],
+            "version": "1.35"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozNjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6MzYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_eks_cluster.eks_worker_cluster",
+            "aws_iam_role.eks_nodes",
+            "aws_iam_role_policy_attachment.cni",
+            "aws_iam_role_policy_attachment.ecr",
+            "aws_iam_role_policy_attachment.worker",
+            "aws_key_pair.ec2_key",
+            "data.aws_subnets.public",
+            "data.aws_vpc.default",
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "eks_nodes",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::589118303122:role/afridi-eks-worker-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-06-01T01:32:21Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "afridi-eks-worker-role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+              "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+              "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+            ],
+            "max_session_duration": 3600,
+            "name": "afridi-eks-worker-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {},
+            "tags_all": {},
+            "unique_id": "AROAYSKRP5OJH4A24C77M"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "cni",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "afridi-eks-worker-role-20260601013220520200000002",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+            "role": "afridi-eks-worker-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.eks_nodes"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "ecr",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "afridi-eks-worker-role-20260601013220829500000003",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+            "role": "afridi-eks-worker-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.eks_nodes"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "worker",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "afridi-eks-worker-role-20260601013220200900000001",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+            "role": "afridi-eks-worker-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.eks_nodes"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "afridi_basic",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "ami": "ami-0c02fb55956c7d316",
+            "arn": "arn:aws:ec2:us-east-1:589118303122:instance/i-05cd64ac1cbcdb375",
+            "associate_public_ip_address": true,
+            "availability_zone": "us-east-1a",
+            "capacity_reservation_specification": [
+              {
+                "capacity_reservation_preference": "open",
+                "capacity_reservation_target": []
+              }
+            ],
+            "cpu_core_count": 1,
+            "cpu_options": [
+              {
+                "amd_sev_snp": "",
+                "core_count": 1,
+                "threads_per_core": 1
+              }
+            ],
+            "cpu_threads_per_core": 1,
+            "credit_specification": [
+              {
+                "cpu_credits": "standard"
+              }
+            ],
+            "disable_api_stop": false,
+            "disable_api_termination": false,
+            "ebs_block_device": [],
+            "ebs_optimized": false,
+            "enable_primary_ipv6": null,
+            "enclave_options": [
+              {
+                "enabled": false
+              }
+            ],
+            "ephemeral_block_device": [],
+            "get_password_data": false,
+            "hibernation": false,
+            "host_id": "",
+            "host_resource_group_arn": null,
+            "iam_instance_profile": "",
+            "id": "i-05cd64ac1cbcdb375",
+            "instance_initiated_shutdown_behavior": "stop",
+            "instance_lifecycle": "",
+            "instance_market_options": [],
+            "instance_state": "running",
+            "instance_type": "t2.micro",
+            "ipv6_address_count": 0,
+            "ipv6_addresses": [],
+            "key_name": "afridi-basic-key",
+            "launch_template": [],
+            "maintenance_options": [
+              {
+                "auto_recovery": "default"
+              }
+            ],
+            "metadata_options": [
+              {
+                "http_endpoint": "enabled",
+                "http_protocol_ipv6": "disabled",
+                "http_put_response_hop_limit": 1,
+                "http_tokens": "optional",
+                "instance_metadata_tags": "disabled"
+              }
+            ],
+            "monitoring": false,
+            "network_interface": [],
+            "outpost_arn": "",
+            "password_data": "",
+            "placement_group": "",
+            "placement_partition_number": 0,
+            "primary_network_interface_id": "eni-08c1e1d5e66bac9f0",
+            "private_dns": "ip-172-31-25-2.ec2.internal",
+            "private_dns_name_options": [
+              {
+                "enable_resource_name_dns_a_record": false,
+                "enable_resource_name_dns_aaaa_record": false,
+                "hostname_type": "ip-name"
+              }
+            ],
+            "private_ip": "172.31.25.2",
+            "public_dns": "ec2-100-55-69-232.compute-1.amazonaws.com",
+            "public_ip": "100.55.69.232",
+            "root_block_device": [
+              {
+                "delete_on_termination": true,
+                "device_name": "/dev/xvda",
+                "encrypted": false,
+                "iops": 3000,
+                "kms_key_id": "",
+                "tags": {},
+                "tags_all": {},
+                "throughput": 125,
+                "volume_id": "vol-03cb15459b873606a",
+                "volume_size": 8,
+                "volume_type": "gp3"
+              }
+            ],
+            "secondary_private_ips": [],
+            "security_groups": [
+              "afridi-allow-ssh",
+              "interns-dev-vpc-allow-mgmt-sg"
+            ],
+            "source_dest_check": true,
+            "spot_instance_request_id": "",
+            "subnet_id": "subnet-0e882c7ef132dbb91",
+            "tags": {
+              "Name": "afridi-basic-ec2"
+            },
+            "tags_all": {
+              "Name": "afridi-basic-ec2"
+            },
+            "tenancy": "default",
+            "timeouts": null,
+            "user_data": "d40b8355fc7db7c14bd2fc4a021bead7b8706f53",
+            "user_data_base64": null,
+            "user_data_replace_on_change": false,
+            "volume_tags": null,
+            "vpc_security_group_ids": [
+              "sg-04b9bc1f1e76d3cc4"
+            ]
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMCwicmVhZCI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_key_pair.ec2_key",
+            "aws_security_group.allow_ssh",
+            "data.aws_vpc.default",
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_key_pair",
+      "name": "ec2_key",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:589118303122:key-pair/afridi-basic-key",
+            "fingerprint": "df:c9:47:bc:db:69:6c:76:c0:af:85:11:8f:7f:a1:e2",
+            "id": "afridi-basic-key",
+            "key_name": "afridi-basic-key",
+            "key_name_prefix": "",
+            "key_pair_id": "key-0754ac262a45d3e24",
+            "key_type": "rsa",
+            "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDEcdV7tb22BMv6bVAk6Up3gQSz9V+F3V7S0lXe2ZSpOtqqwTTVo1CpA2ePdF3qQv5IJ1pVG3RtEvUPU64eNQ1mo1ZuFJLSOm7FXNvPP5R440kA7Jxk+xlFNeNzAdcgnE4HQVBVZOUAL+psSQgVxONKOcIZSsgDEqbnb5+h0gtuF6R9CzI9UE/59SpTGQkCEX95wErSgbqsYyEQ33sCin+YhLdkp6sDBMUEmwrFST1Ck9092ZkBI0UuGvllONj5MTzJfOjSj/E3Kzg7bfjBEHrya7zzQjVx1RTOfz5oy6dPb5SaasGtd6JvQwGkPkp4JmM5V8W6xEdDjwRkmiKUcddfT7rKkjr2xCRqBhN+5GV+TqteN6q1OF5b5V9UortwCuPQebR6NNDaPBbV+jLk9c0U8o9IKuRodgim6LV6GZss2Xgh00SUvVJsXStwRLX5s27EgYj2fnl5CTs9n2nC3P+8GuOZIUSs1eHR9wMx7anhkaUhXYQpvq9CDNmUdn76BtAkcZg0m8BtGMw/5wgzQxcL+A6MTscUffyI2si8qjyAHirhlsZ9ItBSi70eax/TTcP1GSulkjbZTwAwTAWz5BfLNr87R2Hoo0LKKwKoLtY0XHioZST8BNOustu9ejeIkkocbH8DMn/8V8176ghHzvu5d6lx3DbWSWhOdY3QyaxL3w==",
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_lambda_function",
+      "name": "router",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "architectures": [
+              "x86_64"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:589118303122:function:message-middleware-router",
+            "code_sha256": "TTHqkbpIEesu5vjvBM1udP0bgysSCV4dxXli4Okn4RY=",
+            "code_signing_config_arn": "",
+            "dead_letter_config": [],
+            "description": "",
+            "environment": [
+              {
+                "variables": {
+                  "EC2_PUBLIC_IP": "100.55.69.232",
+                  "ECS_CLUSTER_NAME": "afridi-hybrid-cluster",
+                  "ECS_SERVICE_NAME": "afridi-rust-service"
+                }
+              }
+            ],
+            "ephemeral_storage": [
+              {
+                "size": 512
+              }
+            ],
+            "file_system_config": [],
+            "filename": "./lambda_function.zip",
+            "function_name": "message-middleware-router",
+            "handler": "index.handler",
+            "id": "message-middleware-router",
+            "image_config": [],
+            "image_uri": "",
+            "invoke_arn": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:589118303122:function:message-middleware-router/invocations",
+            "kms_key_arn": "",
+            "last_modified": "2026-06-01T01:32:24.000+0000",
+            "layers": [],
+            "logging_config": [
+              {
+                "application_log_level": "",
+                "log_format": "Text",
+                "log_group": "/aws/lambda/message-middleware-router",
+                "system_log_level": ""
+              }
+            ],
+            "memory_size": 128,
+            "package_type": "Zip",
+            "publish": false,
+            "qualified_arn": "arn:aws:lambda:us-east-1:589118303122:function:message-middleware-router:$LATEST",
+            "qualified_invoke_arn": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:589118303122:function:message-middleware-router:$LATEST/invocations",
+            "replace_security_groups_on_destroy": null,
+            "replacement_security_group_ids": null,
+            "reserved_concurrent_executions": -1,
+            "role": "arn:aws:iam::589118303122:role/kpi-interns-dev-sso-inboundRole",
+            "runtime": "nodejs18.x",
+            "s3_bucket": null,
+            "s3_key": null,
+            "s3_object_version": null,
+            "signing_job_arn": "",
+            "signing_profile_version_arn": "",
+            "skip_destroy": false,
+            "snap_start": [],
+            "source_code_hash": "TTHqkbpIEesu5vjvBM1udP0bgysSCV4dxXli4Okn4RY=",
+            "source_code_size": 927,
+            "tags": {},
+            "tags_all": {},
+            "timeout": 3,
+            "timeouts": null,
+            "tracing_config": [
+              {
+                "mode": "PassThrough"
+              }
+            ],
+            "version": "$LATEST",
+            "vpc_config": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_apigatewayv2_api.http_api",
+            "aws_db_instance.postgres",
+            "aws_ecr_repository.message_generator",
+            "aws_ecs_cluster.app_cluster",
+            "aws_ecs_service.rust_ecs_service",
+            "aws_ecs_task_definition.rust_ecs_task",
+            "aws_instance.afridi_basic",
+            "aws_key_pair.ec2_key",
+            "aws_security_group.allow_ssh",
+            "aws_security_group.rds_sg",
+            "data.archive_file.lambda_zip",
+            "data.aws_subnets.public",
+            "data.aws_vpc.default",
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_lambda_permission",
+      "name": "api_gw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "action": "lambda:InvokeFunction",
+            "event_source_token": null,
+            "function_name": "message-middleware-router",
+            "function_url_auth_type": null,
+            "id": "AllowExecutionFromAPIGateway",
+            "principal": "apigateway.amazonaws.com",
+            "principal_org_id": null,
+            "qualifier": "",
+            "source_account": null,
+            "source_arn": "arn:aws:execute-api:us-east-1:589118303122:fzurpsaf1b/*/*",
+            "statement_id": "AllowExecutionFromAPIGateway",
+            "statement_id_prefix": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_apigatewayv2_api.http_api",
+            "aws_db_instance.postgres",
+            "aws_ecr_repository.message_generator",
+            "aws_ecs_cluster.app_cluster",
+            "aws_ecs_service.rust_ecs_service",
+            "aws_ecs_task_definition.rust_ecs_task",
+            "aws_instance.afridi_basic",
+            "aws_key_pair.ec2_key",
+            "aws_lambda_function.router",
+            "aws_security_group.allow_ssh",
+            "aws_security_group.rds_sg",
+            "data.archive_file.lambda_zip",
+            "data.aws_subnets.public",
+            "data.aws_vpc.default",
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "allow_ssh",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:589118303122:security-group/sg-04b9bc1f1e76d3cc4",
+            "description": "Allow inbound SSH and application tier web traffic",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow unrestricted outbound execution communication",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-04b9bc1f1e76d3cc4",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow inbound SSH administration",
+                "from_port": 22,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 22
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow public HTTP traffic",
+                "from_port": 80,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 80
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow public HTTPS traffic",
+                "from_port": 443,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 443
+              }
+            ],
+            "name": "afridi-allow-ssh",
+            "name_prefix": "",
+            "owner_id": "589118303122",
+            "revoke_rules_on_delete": false,
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0f581c357638067ff"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "data.aws_vpc.default"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "rds_sg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:589118303122:security-group/sg-0127c57eb9eeb504d",
+            "description": "Managed by Terraform",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0127c57eb9eeb504d",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 5432,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 5432
+              }
+            ],
+            "name": "afridi-shared-rds-sg",
+            "name_prefix": "",
+            "owner_id": "589118303122",
+            "revoke_rules_on_delete": false,
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0f581c357638067ff"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "data.aws_vpc.default"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "local_file",
+      "name": "private_key_pem",
+      "provider": "provider[\"registry.terraform.io/hashicorp/local\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "content": "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\n",
+            "content_base64": null,
+            "content_base64sha256": "V2sOmC/Ub4h02ytcfAcca/8tg8OLRxDfDXEBoheBLnk=",
+            "content_base64sha512": "i5OyLQj3PADVjCp9syqi5BG1wls/1zZiCcx7CNgpWGLxBaicr842c83L8/Z+tJGhoHRcAIlUi6CLKY/xwCqgIg==",
+            "content_md5": "1fab28ce5b1e3b1d364c701a30fa84f7",
+            "content_sha1": "4b2e558c84a9b20510673e65823929e261250be1",
+            "content_sha256": "576b0e982fd46f8874db2b5c7c071c6bff2d83c38b4710df0d7101a217812e79",
+            "content_sha512": "8b93b22d08f73c00d58c2a7db32aa2e411b5c25b3fd7366209cc7b08d8295862f105a89cafce3673cdcbf3f67eb491a1a0745c0089548ba08b298ff1c02aa022",
+            "directory_permission": "0700",
+            "file_permission": "0400",
+            "filename": "./afridi-key.pem",
+            "id": "4b2e558c84a9b20510673e65823929e261250be1",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "content"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "sensitive_content"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "dependencies": [
+            "tls_private_key.ec2_key"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "tls_private_key",
+      "name": "ec2_key",
+      "provider": "provider[\"registry.terraform.io/hashicorp/tls\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "algorithm": "RSA",
+            "ecdsa_curve": "P224",
+            "id": "bd902899c54799001eb1afe1c64f468a5cd98f52",
+            "private_key_openssh": "-----BEGIN OPENSSH PRIVATE KEY-----\n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\n-----END OPENSSH PRIVATE KEY-----\n",
+            "private_key_pem": "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAxHHVe7W9tgTL+m1QJOlKd4EEs/Vfhd1e0tJV3tmUqTraqsE0\n1aNQqQNnj3Rd6kL+SCdaVRt0bRL1D1OuHjUNZqNWbhSS0jpuxVzbzz+UeONJAOyc\nZPsZRTXjcwHXIJxOB0FQVWTlAC/qbEkIFcTjSjnCGUrIAxKm52+fodILbhekfQsy\nPVBP+fUqUxkJAhF/ecBK0oG6rGMhEN97Aop/mIS3ZKerAwTFBJsKxUk9QpPdPdmZ\nASNFLhr5ZTjY+TE8yXzo0o/xNys4O234wRB68mu880I1cdUUzn8+aMunT2+UmmrB\nrXeib0MBpD5KeCZjOVfFusRHQ48EZJoilHHXX0+6ypI69sQkagYTfuRlfk6rXjeq\ntTheW+VfVKK7cArj0Hm0ejTQ2jwW1foy5PXNFPKPSCrkaHYIpui1ehmbLNl4IdNE\nlL1SbF0rcES1+bNuxIGI9n55eQk7PZ9pwtz/vBrjmSFErNXh0fcDMe2p4ZGlIV2E\nKb6vQgzZlHZ++gbQJHGYNJvAbRjMP+cIM0MXC/gOjE7HFH38iNrIvKo8gB4q4ZbG\nfSLQUou9Hmsf003D9RkrpZI22U8AMEwFs+QXyza/O0dh6KNCyisCqC7WNFx4qGUk\n/ATTrrLbvXo3iJJKHGx/AzJ//FfNe+oIR877uXepcdw21kloTnWN0MmsS98CAwEA\nAQKCAgA7fBDeDhFtPZSat2EuXCo9d6b561JKkdb11dVEzvPyLq0qSaj7DCIPm8VP\nLjiGCFVBehEjdlXR9YyZYIh4Ay6Upt80JCy1VhZW0yCIaENIO+LOUdelyFdFmuTN\n3X/MEyiZj9CImy2w2dGNiqvVE7KTtlutFvTr4UkDCcz3zkfBxYz8hFhpMpmVIgT3\n9rvAkZXdQzok9j2Vl8radiGkilXK1F1IMHFbT6VtGJmxVdUkBOxYnzxymMCJDof4\ne7dP9fXnOViy8f1j7EVx0YIizB++qpsjuie+2Xwcb3FxgEGgjzQbcjpFkdVxBYRI\nvMgGC/G92nM4c9j0fykgYYAZHUPOw40i7rMtvRbT3aS7bJiKpHOz5xv+ihjxMV2J\nUAwOdwGedRUstS242p3WiuTaIcThVZK6VgPU0PP3JbUn02Y9qmCv878gJpqUGMoo\nKwC+OXHD3nWrXCSBpPbbC4MgyQ8xun63vSGmWPKOx6C3p5LudPnABHWix22Prwq8\ni5JqRRurRt4hbWiQCiedASi5V/n1hvdO/7vePtghPSdoNTe8CSF8qORovJBF+pbF\nKl5EEVi7xeWTFw/MpvleXpj/mIGlMx1A6qcfTybqZAsdlRze6lg05yX5mo88NJmh\nxA80Bf20N/vt/zgvjBv91zq85+XBqB22nYQY4Y7D14NMDLIbeQKCAQEA8FomPpro\nhzc0uu0xt0DiTZtgLyLFJ1XmQYg5mX0sWYHXkbcO1qU+ahVdLP3AvoZxqBPtXKhA\ngra0v6CloyQn3NkraIGfcQVvrmoqoncozPT6wgB5TfnJMB0rCJmotZrrTggFpcdL\nlEEc3fIvmYRKcs05RIvBt35RqGZy00C9nJAjYgOsnyT2jbfB8JWocm7UYDl0Jen2\nf94EEfv/3rRpZfasyaP3dGXz3puF4dfyziJnIGlGKx7EKAtkVYkeT/j6T3UzCqFp\n9/MwS9LnnIkfSIxa/YvNxKoZumWCc+7MYwH3fMmUtad0WEjP6gEUVLnoTl4DGjDZ\ncN8UgQiWjfip3QKCAQEA0TvlgykCTVP7nJejyFSETpY83xxKwI6Jwo7/uCYzCcj/\nl51rpagN50GH9meu6I9kcwaSiWyi5yU1IOLPUkeV3xADgUITbEiDvZl9MSBrteG0\ny7QrsJjlbbSxTj+RJ1r5xkkvJfiHoEaumAwhF2SvBnxN0vQowL1xsaaRpOhgNKoQ\nEcsyjmCLCDbbA10ie+MweSiLdYRg5Ugr8Ec7IRxbmCC64PYS2+aToelXm+CA+q++\nNaE4S3AdoWBxTWBKynpOcvontua7FtEBsPw1cTuNCCtrMvSEBAMNf0THvc/9gfYV\nt+oW67SyuBI8obwYftqVk/Wz8ACq8sd2r0WFKAb26wKCAQEA4Xzx3FIgTJqyUZwt\nxCqPJRfbyNzp8dlYx6oxv5n7fY2e3AnNVfp477VTUN5PcW9YOcNYMFF5FCissgrY\n2pEVBNCJNOZG2xWqjQr1LK52DLLYfiFLrKfm48i5krv110qb7vz/r2OluFTN7DtG\nBNRjtAhs7a3f83IC0eYrW52lRbjEOTQRQsy+sn3u6PK+sXzgqdW87cTtiVCUqPqu\nNhUzvIEL4bB+eyka/YESvaqHFHSaI4IgXlvi0168prKZSZXf36OoWxTMAd6ZNMmM\nmQLb4ogq5Su/w/2BXanWFUW3Yjt6IAxOA44yTJEi3fpdRI+VLdBtQKkLliTza4rP\nFCpx0QKCAQEAhVyUEWGWIguhmFHfBtU37487BUpXKxyvGd9jhtByP45puw2Pi2ru\nUbQnIRs9FOYwtFBAHm+r9YB1uJxYYK1YDXF7imu/TYl6zuKCNUng3XEbd6tDHbCW\nq7I8QQ+rSVZnVcdX0e/zImlq52bzwKFgHdYlFIyjXRZi3US6GE4049xxmaXWd4F5\nnKa6Og6m6CgKwW7iVOkniXzS5LfCLHyStQhHlRPDOX5iIxVDzgruqtpRdoVoCE1R\n1YZPMW5qvVvvnMFthtrR7N0TIufeeGnonohuL3BCpPv9Il2IoqdrgeaEOVFvgpUO\nRNz64GuvgUt5g3FcW2FRlKUmNNku4jBuOQKCAQA+xJxzFZy5zTlYwtTBYmQGJ467\nxXif2uBb0roZmmInriIB++QsZN8dI5Wyo+cv1MvptQzmX1mW1wMj1TrZy0q3PV28\ngIn+t6v+3IpUNhkxcl5jk4BDbI6t2kkGZWPPMNUSj+72ShJIGsotxCaMqK4nOjo+\ncx3ZL9rvIuM+cT9amEHhsdYKsU5RIxQSkhPrRTv9h1RUfge+CVAvR91wE/yZiqAe\nalMphr+12rBiTI6h+L2R8dm7DQhk4hd4fu1a2lvb/K46A2v+YqeGyr7ft/QS83vq\nLslsZia+YUqYohexnLol1rDjUZ5u8bbXkbNZ2scOhZPU57VDP0FeLlOiGEA0\n-----END RSA PRIVATE KEY-----\n",
+            "private_key_pem_pkcs8": "-----BEGIN PRIVATE KEY-----\nMIIJQwIBADANBgkqhkiG9w0BAQEFAASCCS0wggkpAgEAAoICAQDEcdV7tb22BMv6\nbVAk6Up3gQSz9V+F3V7S0lXe2ZSpOtqqwTTVo1CpA2ePdF3qQv5IJ1pVG3RtEvUP\nU64eNQ1mo1ZuFJLSOm7FXNvPP5R440kA7Jxk+xlFNeNzAdcgnE4HQVBVZOUAL+ps\nSQgVxONKOcIZSsgDEqbnb5+h0gtuF6R9CzI9UE/59SpTGQkCEX95wErSgbqsYyEQ\n33sCin+YhLdkp6sDBMUEmwrFST1Ck9092ZkBI0UuGvllONj5MTzJfOjSj/E3Kzg7\nbfjBEHrya7zzQjVx1RTOfz5oy6dPb5SaasGtd6JvQwGkPkp4JmM5V8W6xEdDjwRk\nmiKUcddfT7rKkjr2xCRqBhN+5GV+TqteN6q1OF5b5V9UortwCuPQebR6NNDaPBbV\n+jLk9c0U8o9IKuRodgim6LV6GZss2Xgh00SUvVJsXStwRLX5s27EgYj2fnl5CTs9\nn2nC3P+8GuOZIUSs1eHR9wMx7anhkaUhXYQpvq9CDNmUdn76BtAkcZg0m8BtGMw/\n5wgzQxcL+A6MTscUffyI2si8qjyAHirhlsZ9ItBSi70eax/TTcP1GSulkjbZTwAw\nTAWz5BfLNr87R2Hoo0LKKwKoLtY0XHioZST8BNOustu9ejeIkkocbH8DMn/8V817\n6ghHzvu5d6lx3DbWSWhOdY3QyaxL3wIDAQABAoICADt8EN4OEW09lJq3YS5cKj13\npvnrUkqR1vXV1UTO8/IurSpJqPsMIg+bxU8uOIYIVUF6ESN2VdH1jJlgiHgDLpSm\n3zQkLLVWFlbTIIhoQ0g74s5R16XIV0Wa5M3df8wTKJmP0IibLbDZ0Y2Kq9UTspO2\nW60W9OvhSQMJzPfOR8HFjPyEWGkymZUiBPf2u8CRld1DOiT2PZWXytp2IaSKVcrU\nXUgwcVtPpW0YmbFV1SQE7FifPHKYwIkOh/h7t0/19ec5WLLx/WPsRXHRgiLMH76q\nmyO6J77ZfBxvcXGAQaCPNBtyOkWR1XEFhEi8yAYL8b3aczhz2PR/KSBhgBkdQ87D\njSLusy29FtPdpLtsmIqkc7PnG/6KGPExXYlQDA53AZ51FSy1LbjandaK5NohxOFV\nkrpWA9TQ8/cltSfTZj2qYK/zvyAmmpQYyigrAL45ccPedatcJIGk9tsLgyDJDzG6\nfre9IaZY8o7HoLenku50+cAEdaLHbY+vCryLkmpFG6tG3iFtaJAKJ50BKLlX+fWG\n907/u94+2CE9J2g1N7wJIXyo5Gi8kEX6lsUqXkQRWLvF5ZMXD8ym+V5emP+YgaUz\nHUDqpx9PJupkCx2VHN7qWDTnJfmajzw0maHEDzQF/bQ3++3/OC+MG/3XOrzn5cGo\nHbadhBjhjsPXg0wMsht5AoIBAQDwWiY+muiHNzS67TG3QOJNm2AvIsUnVeZBiDmZ\nfSxZgdeRtw7WpT5qFV0s/cC+hnGoE+1cqECCtrS/oKWjJCfc2StogZ9xBW+uaiqi\ndyjM9PrCAHlN+ckwHSsImai1mutOCAWlx0uUQRzd8i+ZhEpyzTlEi8G3flGoZnLT\nQL2ckCNiA6yfJPaNt8HwlahybtRgOXQl6fZ/3gQR+//etGll9qzJo/d0ZfPem4Xh\n1/LOImcgaUYrHsQoC2RViR5P+PpPdTMKoWn38zBL0ueciR9IjFr9i83Eqhm6ZYJz\n7sxjAfd8yZS1p3RYSM/qARRUuehOXgMaMNlw3xSBCJaN+KndAoIBAQDRO+WDKQJN\nU/ucl6PIVIROljzfHErAjonCjv+4JjMJyP+XnWulqA3nQYf2Z67oj2RzBpKJbKLn\nJTUg4s9SR5XfEAOBQhNsSIO9mX0xIGu14bTLtCuwmOVttLFOP5EnWvnGSS8l+Ieg\nRq6YDCEXZK8GfE3S9CjAvXGxppGk6GA0qhARyzKOYIsINtsDXSJ74zB5KIt1hGDl\nSCvwRzshHFuYILrg9hLb5pOh6Veb4ID6r741oThLcB2hYHFNYErKek5y+ie25rsW\n0QGw/DVxO40IK2sy9IQEAw1/RMe9z/2B9hW36hbrtLK4EjyhvBh+2pWT9bPwAKry\nx3avRYUoBvbrAoIBAQDhfPHcUiBMmrJRnC3EKo8lF9vI3Onx2VjHqjG/mft9jZ7c\nCc1V+njvtVNQ3k9xb1g5w1gwUXkUKKyyCtjakRUE0Ik05kbbFaqNCvUsrnYMsth+\nIUusp+bjyLmSu/XXSpvu/P+vY6W4VM3sO0YE1GO0CGztrd/zcgLR5itbnaVFuMQ5\nNBFCzL6yfe7o8r6xfOCp1bztxO2JUJSo+q42FTO8gQvhsH57KRr9gRK9qocUdJoj\ngiBeW+LTXrymsplJld/fo6hbFMwB3pk0yYyZAtviiCrlK7/D/YFdqdYVRbdiO3og\nDE4DjjJMkSLd+l1Ej5Ut0G1AqQuWJPNris8UKnHRAoIBAQCFXJQRYZYiC6GYUd8G\n1TfvjzsFSlcrHK8Z32OG0HI/jmm7DY+Lau5RtCchGz0U5jC0UEAeb6v1gHW4nFhg\nrVgNcXuKa79NiXrO4oI1SeDdcRt3q0MdsJarsjxBD6tJVmdVx1fR7/MiaWrnZvPA\noWAd1iUUjKNdFmLdRLoYTjTj3HGZpdZ3gXmcpro6DqboKArBbuJU6SeJfNLkt8Is\nfJK1CEeVE8M5fmIjFUPOCu6q2lF2hWgITVHVhk8xbmq9W++cwW2G2tHs3RMi5954\naeieiG4vcEKk+/0iXYiip2uB5oQ5UW+ClQ5E3Prga6+BS3mDcVxbYVGUpSY02S7i\nMG45AoIBAD7EnHMVnLnNOVjC1MFiZAYnjrvFeJ/a4FvSuhmaYieuIgH75Cxk3x0j\nlbKj5y/Uy+m1DOZfWZbXAyPVOtnLSrc9XbyAif63q/7cilQ2GTFyXmOTgENsjq3a\nSQZlY88w1RKP7vZKEkgayi3EJoyoric6Oj5zHdkv2u8i4z5xP1qYQeGx1gqxTlEj\nFBKSE+tFO/2HVFR+B74JUC9H3XAT/JmKoB5qUymGv7XasGJMjqH4vZHx2bsNCGTi\nF3h+7VraW9v8rjoDa/5ip4bKvt+39BLze+ouyWxmJr5hSpiiF7GcuiXWsONRnm7x\ntteRs1naxw6Fk9TntUM/QV4uU6IYQDQ=\n-----END PRIVATE KEY-----\n",
+            "public_key_fingerprint_md5": "60:e9:06:7f:9e:da:4c:3d:b5:0b:a0:f4:2a:c1:d3:d4",
+            "public_key_fingerprint_sha256": "SHA256:iBAXyrZnuFlxSyFV7uu+kW5bp2J8JcSmAyzaZA4MtoA",
+            "public_key_openssh": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDEcdV7tb22BMv6bVAk6Up3gQSz9V+F3V7S0lXe2ZSpOtqqwTTVo1CpA2ePdF3qQv5IJ1pVG3RtEvUPU64eNQ1mo1ZuFJLSOm7FXNvPP5R440kA7Jxk+xlFNeNzAdcgnE4HQVBVZOUAL+psSQgVxONKOcIZSsgDEqbnb5+h0gtuF6R9CzI9UE/59SpTGQkCEX95wErSgbqsYyEQ33sCin+YhLdkp6sDBMUEmwrFST1Ck9092ZkBI0UuGvllONj5MTzJfOjSj/E3Kzg7bfjBEHrya7zzQjVx1RTOfz5oy6dPb5SaasGtd6JvQwGkPkp4JmM5V8W6xEdDjwRkmiKUcddfT7rKkjr2xCRqBhN+5GV+TqteN6q1OF5b5V9UortwCuPQebR6NNDaPBbV+jLk9c0U8o9IKuRodgim6LV6GZss2Xgh00SUvVJsXStwRLX5s27EgYj2fnl5CTs9n2nC3P+8GuOZIUSs1eHR9wMx7anhkaUhXYQpvq9CDNmUdn76BtAkcZg0m8BtGMw/5wgzQxcL+A6MTscUffyI2si8qjyAHirhlsZ9ItBSi70eax/TTcP1GSulkjbZTwAwTAWz5BfLNr87R2Hoo0LKKwKoLtY0XHioZST8BNOustu9ejeIkkocbH8DMn/8V8176ghHzvu5d6lx3DbWSWhOdY3QyaxL3w==\n",
+            "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxHHVe7W9tgTL+m1QJOlK\nd4EEs/Vfhd1e0tJV3tmUqTraqsE01aNQqQNnj3Rd6kL+SCdaVRt0bRL1D1OuHjUN\nZqNWbhSS0jpuxVzbzz+UeONJAOycZPsZRTXjcwHXIJxOB0FQVWTlAC/qbEkIFcTj\nSjnCGUrIAxKm52+fodILbhekfQsyPVBP+fUqUxkJAhF/ecBK0oG6rGMhEN97Aop/\nmIS3ZKerAwTFBJsKxUk9QpPdPdmZASNFLhr5ZTjY+TE8yXzo0o/xNys4O234wRB6\n8mu880I1cdUUzn8+aMunT2+UmmrBrXeib0MBpD5KeCZjOVfFusRHQ48EZJoilHHX\nX0+6ypI69sQkagYTfuRlfk6rXjeqtTheW+VfVKK7cArj0Hm0ejTQ2jwW1foy5PXN\nFPKPSCrkaHYIpui1ehmbLNl4IdNElL1SbF0rcES1+bNuxIGI9n55eQk7PZ9pwtz/\nvBrjmSFErNXh0fcDMe2p4ZGlIV2EKb6vQgzZlHZ++gbQJHGYNJvAbRjMP+cIM0MX\nC/gOjE7HFH38iNrIvKo8gB4q4ZbGfSLQUou9Hmsf003D9RkrpZI22U8AMEwFs+QX\nyza/O0dh6KNCyisCqC7WNFx4qGUk/ATTrrLbvXo3iJJKHGx/AzJ//FfNe+oIR877\nuXepcdw21kloTnWN0MmsS98CAwEAAQ==\n-----END PUBLIC KEY-----\n",
+            "rsa_bits": 4096
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "private_key_openssh"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "private_key_pem"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "private_key_pem_pkcs8"
+              }
+            ]
+          ],
+          "identity_schema_version": 0
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
